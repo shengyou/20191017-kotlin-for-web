@@ -8,12 +8,16 @@ import io.ktor.freemarker.FreeMarker
 import io.ktor.freemarker.FreeMarkerContent
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
+import io.ktor.request.receiveParameters
 import io.ktor.response.respond
+import io.ktor.response.respondRedirect
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.web.entities.Task
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -40,10 +44,25 @@ fun Application.module(testing: Boolean = false) {
 
         get("/") {
             val tasks = transaction {
-                Task.all().toList()
+                Task.all().sortedByDescending { it.id }.toList()
             }
 
             call.respond(FreeMarkerContent("index.ftl", mapOf("tasks" to tasks)))
+        }
+
+        post("/tasks") {
+            val params = call.receiveParameters()
+
+            transaction {
+                Task.new {
+                    title = params["title"].toString()
+                    completed = params["completed"]?.toBoolean() ?: false
+                    createdAt = DateTime.now()
+                    updatedAt = DateTime.now()
+                }
+            }
+
+            call.respondRedirect("/")
         }
 
     }
