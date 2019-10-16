@@ -75,6 +75,16 @@ fun Application.module(testing: Boolean = false) {
             call.respondRedirect("/")
         }
 
+        post("/tasks/{id}/delete") {
+            val id = call.parameters["id"]!!.toInt()
+            transaction {
+                val task = Task.findById(id)!!
+                task.delete()
+            }
+
+            call.respondRedirect("/")
+        }
+
     }
 
 }
