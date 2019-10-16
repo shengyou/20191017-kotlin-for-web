@@ -1,6 +1,8 @@
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
+val exposed_version: String by project
+val mysql_connector_version:String by project
 
 plugins {
     application
@@ -26,6 +28,8 @@ dependencies {
     testCompile("io.ktor:ktor-server-tests:$ktor_version")
     implementation("io.ktor:ktor-html-builder:$ktor_version")
     implementation("io.ktor:ktor-freemarker:$ktor_version")
+    implementation("org.jetbrains.exposed:exposed:$exposed_version")
+    implementation("mysql:mysql-connector-java:$mysql_connector_version")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
