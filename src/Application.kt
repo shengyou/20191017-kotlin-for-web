@@ -1,11 +1,14 @@
 package io.ktor.web
 
+import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.Application
 import io.ktor.application.call
-import io.ktor.html.respondHtml
+import io.ktor.application.install
+import io.ktor.freemarker.FreeMarker
+import io.ktor.freemarker.FreeMarkerContent
+import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.routing
-import kotlinx.html.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -13,21 +16,14 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+    }
+
     routing {
 
         get("/") {
-            call.respondHtml {
-                head {
-                    title { +"HTML DSL" }
-                }
-                body {
-                    ul("pagination") {
-                        li { +"Item 1" }
-                        li { +"Item 2" }
-                        li { +"Item 3" }
-                    }
-                }
-            }
+            call.respond(FreeMarkerContent("index.ftl", null))
         }
 
     }
