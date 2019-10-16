@@ -24,6 +24,7 @@ dependencies {
     compile("io.ktor:ktor-server-netty:$ktor_version")
     compile("ch.qos.logback:logback-classic:$logback_version")
     testCompile("io.ktor:ktor-server-tests:$ktor_version")
+    implementation("io.ktor:ktor-html-builder:$ktor_version")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
